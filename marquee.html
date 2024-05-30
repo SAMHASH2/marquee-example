@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marquee Example</title>
+    <style>
+        .iso-marquee {
+            padding: 1.4rem 0;
+            font-size: 8vw;
+            overflow: hidden;
+            background-color: #222232;
+        }
+        .iso-marquee--long {
+            font-size: 1.25vw;
+        }
+        .iso-marquee-linkwrap a {
+            color: #ffffff;
+            text-decoration: none;
+        }
+        .iso-marquee span {
+            display: inline-block;
+            white-space: nowrap;
+            color: #ffffff;
+            width: var(--tw, 100%);
+            text-shadow: var(--tw, 100%) 0 currentColor, calc(var(--tw, 100%) * 2) 0 currentColor, calc(var(--tw, 100%) * 3) 0 currentColor, calc(var(--tw, 100%) * 4) 0 currentColor;
+            will-change: transform;
+            animation: iso-marquee var(--ad, 30s) linear infinite;
+            animation-play-state: play;
+        }
+        @keyframes iso-marquee {
+            0% {
+                transform: translateX(100%);
+            }
+            100% {
+                transform: translateX(-100%);
+            }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .iso-marquee span {
+                animation: none;
+                text-shadow: none;
+                width: auto;
+                display: block;
+                line-height: 1.5;
+                text-align: center;
+                white-space: normal;
+            }
+        }
+    </style>
+</head>
+<body>
+    <a class="iso-marquee-linkwrap" href="https://isotropic.co/blog">
+        <div class="iso-marquee--long iso-marquee">
+            <span>ЯБЪЛКИ 1,20 лв./кг. | ЧЕРЕШИ 2,50 лв./кг. | ЯГОДИ 4,00 лв./кг. | КАРТОФИ ранни 0,90 лв./кг. | ЛУК кромид зрял 1,30 лв./кг. | ЧЕСЪН ЗРЯЛ 5,50 лв./кг. | ДОМАТИ оранжерийни 2,30 лв./кг. | КРАСТАВИЦИ оранжерийни 1,80 лв./кг. | ЗЕЛЕ ГЛАВЕСТО 0,50 лв./кг. | ТИКВИЧКИ 0,90 лв./кг. | САЛАТИ 0,40 лв./бр. | РЕПИ 0,50 лв./бр. | МОРКОВИ 1,20 лв./кг. | ДОМАТИ 2,30 лв./кг. | КРАСТАВИЦИ 2,50 лв./кг. | БАНАНИ 2,50 лв./кг. | АНАНАСИ 3,10 лв./кг. | ПОРТОКАЛИ 1,90 лв./кг. | ЛИМОНИ 2,50 лв./кг. | ПЪПЕШИ 2,50 лв./кг. | ДИНИ 1,30 лв./кг. | ЯБЪЛКИ 1,45 лв./кг. | КРУШИ 3,60 лв./кг. | КАЙСИИ 3,00 лв./кг. | КИВИ 3,50 лв./кг.</span>
+        </div>
+    </a>
+</body>
+</html>
