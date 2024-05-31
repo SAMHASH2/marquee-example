@@ -3,16 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Marquee Example</title>
+    <title>Marquee Example with Google Sheets</title>
     <style>
         .iso-marquee {
             padding: 1.4rem 0;
-            font-size: 8vw;
+            font-size: 3vw; /* Increased text size */
             overflow: hidden;
-            background-color: #222232;
+            background-color: black; /* Changed background color to black */
         }
         .iso-marquee--long {
-            font-size: 1.25vw;
+            font-size: 2vw; /* Increased text size */
         }
         .iso-marquee-linkwrap a {
             color: #ffffff;
@@ -21,39 +21,76 @@
         .iso-marquee span {
             display: inline-block;
             white-space: nowrap;
-            color: #ffffff;
-            width: var(--tw, 100%);
-            text-shadow: var(--tw, 100%) 0 currentColor, calc(var(--tw, 100%) * 2) 0 currentColor, calc(var(--tw, 100%) * 3) 0 currentColor, calc(var(--tw, 100%) * 4) 0 currentColor;
+            color: red; /* Text color set to red */
             will-change: transform;
-            animation: iso-marquee var(--ad, 30s) linear infinite;
+            animation: iso-marquee 140s linear infinite; /* Adjusted play speed to 140s */
             animation-play-state: play;
         }
         @keyframes iso-marquee {
             0% {
-                transform: translateX(100%);
+                transform: translateX(0%);
             }
             100% {
-                transform: translateX(-100%);
-            }
-        }
-        @media (prefers-reduced-motion: reduce) {
-            .iso-marquee span {
-                animation: none;
-                text-shadow: none;
-                width: auto;
-                display: block;
-                line-height: 1.5;
-                text-align: center;
-                white-space: normal;
+                transform: translateX(-50%);
             }
         }
     </style>
 </head>
 <body>
-    <a class="iso-marquee-linkwrap" href="https://isotropic.co/blog">
+    <div class="iso-marquee-linkwrap">
         <div class="iso-marquee--long iso-marquee">
-            <span>ЯБЪЛКИ 1,20 лв./кг. | ЧЕРЕШИ 2,50 лв./кг. | ЯГОДИ 4,00 лв./кг. | КАРТОФИ ранни 0,90 лв./кг. | ЛУК кромид зрял 1,30 лв./кг. | ЧЕСЪН ЗРЯЛ 5,50 лв./кг. | ДОМАТИ оранжерийни 2,30 лв./кг. | КРАСТАВИЦИ оранжерийни 1,80 лв./кг. | ЗЕЛЕ ГЛАВЕСТО 0,50 лв./кг. | ТИКВИЧКИ 0,90 лв./кг. | САЛАТИ 0,40 лв./бр. | РЕПИ 0,50 лв./бр. | МОРКОВИ 1,20 лв./кг. | ДОМАТИ 2,30 лв./кг. | КРАСТАВИЦИ 2,50 лв./кг. | БАНАНИ 2,50 лв./кг. | АНАНАСИ 3,10 лв./кг. | ПОРТОКАЛИ 1,90 лв./кг. | ЛИМОНИ 2,50 лв./кг. | ПЪПЕШИ 2,50 лв./кг. | ДИНИ 1,30 лв./кг. | ЯБЪЛКИ 1,45 лв./кг. | КРУШИ 3,60 лв./кг. | КАЙСИИ 3,00 лв./кг. | КИВИ 3,50 лв./кг.</span>
+            <span id="marquee-text">Loading prices...</span>
         </div>
-    </a>
+    </div>
+
+    <script>
+        const fetchInterval = 60000; // Fetch data every 60 seconds
+
+        async function fetchSheetData() {
+            const sheetId = '1DQfPltIl_mZq0vWHcDz2qfa5H4AAcaoXgX-AkX_GhHA';  // Your Google Sheet ID
+            const apiKey = 'AIzaSyB--vXRSLYkpJD23bKMhbOVf-UHbFjKN4I';  // Your API key
+            const range = 'Sheet1!A2:B22'; // Adjusted range as needed to match your data
+            const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${range}?key=${apiKey}`;
+
+            console.log('Fetching data from URL:', url);
+
+            try {
+                const response = await fetch(url);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                const data = await response.json();
+                console.log('Data fetched from Google Sheets:', data);
+                return data.values;
+            } catch (error) {
+                console.error('Error fetching data from Google Sheets:', error);
+                return [];
+            }
+        }
+
+        function updateMarqueeText(data) {
+            if (data && data.length > 0) {
+                const marqueeText = data
+                    .filter(row => row[1] !== null && row[1] !== '' && row[1] !== undefined) // Filter out rows with null, empty, or undefined prices
+                    .map(row => `${row[0]} ${row[1]}`)
+                    .join(' | ');
+                document.getElementById('marquee-text').textContent = `${marqueeText} | ${marqueeText}`; // Duplicating the text for continuous effect
+                console.log('Marquee text updated:', marqueeText);
+            } else {
+                document.getElementById('marquee-text').textContent = 'No data available';
+                console.log('No data available to display');
+            }
+        }
+
+        async function init() {
+            const data = await fetchSheetData();
+            updateMarqueeText(data);
+        }
+
+        window.addEventListener('load', () => {
+            init(); // Initial fetch and update
+            setInterval(init, fetchInterval); // Set interval to fetch and update data periodically
+        }); 
+    </script>
 </body>
 </html>
